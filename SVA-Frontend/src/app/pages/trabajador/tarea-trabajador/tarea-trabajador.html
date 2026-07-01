@@ -54,7 +54,7 @@
                   </div>
                   <div class="col-4">
                     <small class="d-block text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Puesto</small>
-                    <strong class="text-primary small text-truncate d-block px-1 mt-1" style="color: #1f6feb !important;">{{ item.tipoPuesto }}</strong>
+                    <strong class="text-primary small text-truncate d-block px-1 mt-1" style="color: #153b5c !important;">{{ item.tipoPuesto }}</strong>
                   </div>
                 </div>
 
@@ -69,7 +69,7 @@
               <div class="mt-2">
                 @if (item.estado === 'PENDIENTE') {
                   <button type="button" class="btn text-white w-100 py-2.5 fw-bold rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2" 
-                    style="background-color: #1f6feb;"
+                    style="background-color: #153b5c;"
                     (click)="abrirModalEvidencia(item.id)">
                     <i class="bi bi-camera-fill fs-5"></i> Registrar Evidencia
                   </button>
@@ -150,7 +150,7 @@
         <button type="button" class="btn btn-light px-4 py-2.5 rounded-3 fw-semibold text-secondary border w-100 w-sm-auto" (click)="cerrarModalEvidencia()" [disabled]="isSubiendo">Cancelar</button>
         
         <button type="button" class="btn text-white px-4 py-2.5 rounded-3 fw-bold shadow-sm w-100 w-sm-auto d-flex align-items-center justify-content-center gap-2" 
-          style="background-color: #1f6feb;"
+          style="background-color: #153b5c;"
           [disabled]="!inputUrlEvidencia || isSubiendo" (click)="onEnviarEvidencia()">
           
           @if (isSubiendo) {
