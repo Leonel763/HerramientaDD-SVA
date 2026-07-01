@@ -1,0 +1,42 @@
+﻿<div class="flex h-full w-full flex-col p-4 text-white">
+  <div class="border-b border-white/10 pb-5">
+    <div class="flex items-center gap-3">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-lg font-black text-sva-ink shadow-lg">SVA</div>
+      <div>
+        <p class="m-0 text-lg font-black leading-none">SVA</p>
+        <p class="m-0 mt-1 text-xs font-semibold uppercase tracking-widest text-white/45">Control operativo</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-5 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur">
+    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-sva-gold text-sva-ink">
+      <i class="bi bi-person-workspace text-lg"></i>
+    </div>
+    <div class="min-w-0">
+      <h6 class="m-0 truncate text-sm font-black text-white">{{ username }}</h6>
+      <small class="text-xs font-bold uppercase tracking-wider text-white/55">
+        {{ myRole === 'SUPERADMINISTRADOR' ? 'Super Admin' : 'Administrador' }}
+      </small>
+    </div>
+  </div>
+
+  <nav class="flex flex-1 flex-col gap-2">
+    <button type="button" class="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold transition hover:bg-white/10" (click)="selectTab('resumen')" [class.bg-white]="currentTab === 'resumen'" [class.text-sva-ink]="currentTab === 'resumen'" [class.shadow-lg]="currentTab === 'resumen'">
+      <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+    </button>
+    <button type="button" class="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold transition hover:bg-white/10" (click)="selectTab('tareaje')" [class.bg-white]="currentTab === 'tareaje'" [class.text-sva-ink]="currentTab === 'tareaje'" [class.shadow-lg]="currentTab === 'tareaje'">
+      <i class="bi bi-calendar2-check"></i><span>Asignar tareas</span>
+    </button>
+    <button type="button" class="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold transition hover:bg-white/10" (click)="selectTab('revision')" [class.bg-white]="currentTab === 'revision'" [class.text-sva-ink]="currentTab === 'revision'" [class.shadow-lg]="currentTab === 'revision'">
+      <i class="bi bi-shield-check"></i><span>Auditar asistencias</span>
+    </button>
+    <button type="button" class="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold transition hover:bg-white/10" (click)="selectTab('trabajadores')" [class.bg-white]="currentTab === 'trabajadores'" [class.text-sva-ink]="currentTab === 'trabajadores'" [class.shadow-lg]="currentTab === 'trabajadores'">
+      <i class="bi bi-people"></i><span>Trabajadores</span>
+    </button>
+    <button type="button" class="flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-bold transition hover:bg-white/10" (click)="selectTab('empresas')" [class.bg-white]="currentTab === 'empresas'" [class.text-sva-ink]="currentTab === 'empresas'" [class.shadow-lg]="currentTab === 'empresas'">
+      <i class="bi bi-buildings"></i><span>Clientes / empresas</span>
+    </button>
+  </nav>
+</div>
+

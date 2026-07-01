@@ -1,0 +1,81 @@
+﻿:root {
+  --SVA-blue: #1f6feb;
+  --SVA-blue-hover: #153b5c;
+  --SVA-yellow-pastel: #f2b84b;
+  --SVA-light-bg: #f8fafc;
+  --SVA-border: #dee2e6;
+}
+
+.input-group .form-control,
+.input-group .input-group-text {
+  transition: all 0.2s edit-in-out !important;
+}
+
+
+.input-group .form-control:focus {
+  border-color: var(--SVA-blue) !important;
+  box-shadow: 0 0 0 4px rgba(26, 54, 142, 0.12) !important;
+  background-color: #ffffff !important;
+}
+
+
+.input-group:focus-within .input-group-text {
+  border-color: var(--SVA-blue) !important;
+  background-color: #ffffff !important;
+}
+
+
+.input-group-text img {
+  transition: transform 0.25s ease, opacity 0.2s ease !important;
+}
+
+.input-group:focus-within .input-group-text img {
+  opacity: 1 !important;
+  transform: scale(1.05) !important;
+}
+
+
+button.login-btn {
+  background-color: var(--SVA-blue) !important;
+  border: none !important;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+
+button.login-btn:hover:not(:disabled) {
+  background-color: var(--SVA-blue-hover) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(26, 54, 142, 0.25) !important;
+}
+
+
+button.login-btn:active:not(:disabled) {
+  transform: translateY(-0.5px) !important;
+  box-shadow: 0 3px 8px rgba(26, 54, 142, 0.2) !important;
+}
+
+
+button.login-btn:disabled {
+  background-color: #94a3b8 !important;
+  color: #e2e8f0 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  opacity: 0.8 !important;
+}
+
+
+.alert {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
