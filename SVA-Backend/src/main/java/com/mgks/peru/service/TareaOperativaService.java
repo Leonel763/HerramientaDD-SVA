@@ -1,12 +1,15 @@
 package com.mgks.peru.service;
 
+import com.mgks.peru.model.Sucursal;
 import com.mgks.peru.model.TareaOperativa;
 import com.mgks.peru.repository.TareaOperativaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,14 +46,49 @@ public class TareaOperativaService {
     }
 
     @Transactional
-    public TareaOperativa subirEvidencia(Long id, String urlEvidencia, String observaciones) {
+    public TareaOperativa subirEvidencia(Long id, String urlEvidencia, String observaciones, Double gpsLat, Double gpsLng, Double gpsAccuracy) {
         TareaOperativa t = tareaOperativaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Tarea no encontrada con ID: " + id));
 
         t.setUrlEvidencia(urlEvidencia);
         t.setObservaciones(observaciones);
+        t.setGpsLat(gpsLat);
+        t.setGpsLng(gpsLng);
+        t.setGpsAccuracy(gpsAccuracy);
+
+        Sucursal sucursal = t.getSucursal();
+        if (gpsLat != null && gpsLng != null && sucursal.getLatitud() != null && sucursal.getLongitud() != null
+                && sucursal.getRadioPermitido() != null) {
+            double distancia = calcularDistancia(
+                gpsLat, gpsLng, sucursal.getLatitud(), sucursal.getLongitud());
+            if (distancia > sucursal.getRadioPermitido()) {
+                throw new IllegalArgumentException(String.format(
+                    "Ubicación fuera del radio permitido (%.0f m). Distancia: %.0f m.",
+                    sucursal.getRadioPermitido(), distancia));
+            }
+        }
+
+        LocalTime ahora = LocalTime.now();
+        t.setHoraAsistencia(ahora);
+
+        if (t.getHoraInicio() != null && t.getToleranciaMinutos() != null) {
+            long diffMinutos = Math.abs(Duration.between(t.getHoraInicio(), ahora).toMinutes());
+            t.setAsistencia(diffMinutos <= t.getToleranciaMinutos() ? "A" : "T");
+        }
+
         t.setEstado("EN_REVISION");
         return tareaOperativaRepository.save(t);
+    }
+
+    private double calcularDistancia(double lat1, double lng1, double lat2, double lng2) {
+        final double RADIO_TIERRA = 6371000;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                 * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return RADIO_TIERRA * c;
     }
 
     @Transactional

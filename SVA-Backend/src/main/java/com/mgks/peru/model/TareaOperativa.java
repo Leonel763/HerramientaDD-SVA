@@ -2,6 +2,8 @@ package com.mgks.peru.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "tareas_operativas", indexes = {
@@ -20,7 +22,15 @@ public class TareaOperativa {
     private String turno;
 
     @Column(nullable = false)
-    private String horasAsignadas; 
+    private String horasAsignadas;
+
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime horaInicio;
+
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime horaFin;
+
+    private Integer toleranciaMinutos;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -34,6 +44,17 @@ public class TareaOperativa {
 
     @Column(columnDefinition = "TEXT")
     private String observaciones;
+
+    private Double gpsLat;
+
+    private Double gpsLng;
+
+    private Double gpsAccuracy;
+
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime horaAsistencia;
+
+    private String asistencia;
 
     @ManyToOne
     @JoinColumn(name = "usuario_dni", referencedColumnName = "dni", nullable = false)
@@ -76,6 +97,30 @@ public class TareaOperativa {
 
     public void setHorasAsignadas(String horasAsignadas) {
         this.horasAsignadas = horasAsignadas;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public LocalTime getHoraFin() {
+        return horaFin;
+    }
+
+    public void setHoraFin(LocalTime horaFin) {
+        this.horaFin = horaFin;
+    }
+
+    public Integer getToleranciaMinutos() {
+        return toleranciaMinutos;
+    }
+
+    public void setToleranciaMinutos(Integer toleranciaMinutos) {
+        this.toleranciaMinutos = toleranciaMinutos;
     }
 
     public TipoPuesto getTipoPuesto() {
@@ -124,5 +169,45 @@ public class TareaOperativa {
 
     public void setSucursal(Sucursal sucursal) {
         this.sucursal = sucursal;
+    }
+
+    public Double getGpsLat() {
+        return gpsLat;
+    }
+
+    public void setGpsLat(Double gpsLat) {
+        this.gpsLat = gpsLat;
+    }
+
+    public Double getGpsLng() {
+        return gpsLng;
+    }
+
+    public void setGpsLng(Double gpsLng) {
+        this.gpsLng = gpsLng;
+    }
+
+    public Double getGpsAccuracy() {
+        return gpsAccuracy;
+    }
+
+    public void setGpsAccuracy(Double gpsAccuracy) {
+        this.gpsAccuracy = gpsAccuracy;
+    }
+
+    public LocalTime getHoraAsistencia() {
+        return horaAsistencia;
+    }
+
+    public void setHoraAsistencia(LocalTime horaAsistencia) {
+        this.horaAsistencia = horaAsistencia;
+    }
+
+    public String getAsistencia() {
+        return asistencia;
+    }
+
+    public void setAsistencia(String asistencia) {
+        this.asistencia = asistencia;
     }
 }

@@ -3,13 +3,11 @@ package com.mgks.peru.dto;
 public class EvidenciaRequest {
     private String url;
     private String obs;
+    private Double latitud;
+    private Double longitud;
+    private Double precision;
 
     public EvidenciaRequest() {
-    }
-
-    public EvidenciaRequest(String url, String obs) {
-        this.url = url;
-        this.obs = obs;
     }
 
     public String getUrl() {
@@ -26,5 +24,29 @@ public class EvidenciaRequest {
 
     public void setObs(String obs) {
         this.obs = obs;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    public Double getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(Double precision) {
+        this.precision = precision;
     }
 }

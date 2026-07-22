@@ -24,7 +24,10 @@ export class TareaTrabajador implements OnInit {
   inputObservaciones: string = '';
   
   archivoSeleccionado: File | null = null;
-  isSubiendo: boolean = false; 
+  isSubiendo: boolean = false;
+
+  gpsCoords: { latitud: number; longitud: number; precision: number } | null = null;
+  gpsStatus: 'no_disponible' | 'buscando' | 'capturado' | 'error' = 'no_disponible';
 
   constructor(
     private tareaOperativaService: TareaOperativaService,
@@ -58,7 +61,10 @@ export class TareaTrabajador implements OnInit {
     this.inputUrlEvidencia = '';
     this.inputObservaciones = '';
     this.archivoSeleccionado = null; 
-    this.isSubiendo = false; 
+    this.isSubiendo = false;
+    this.gpsCoords = null;
+    this.gpsStatus = 'buscando';
+    this.capturarUbicacion();
     if (typeof window !== 'undefined') {
       document.body.classList.add('modal-open');
     }
@@ -69,6 +75,28 @@ export class TareaTrabajador implements OnInit {
     if (typeof window !== 'undefined') {
       document.body.classList.remove('modal-open');
     }
+  }
+
+  capturarUbicacion(): void {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      this.gpsStatus = 'no_disponible';
+      return;
+    }
+    this.gpsStatus = 'buscando';
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        this.gpsCoords = {
+          latitud: pos.coords.latitude,
+          longitud: pos.coords.longitude,
+          precision: pos.coords.accuracy
+        };
+        this.gpsStatus = 'capturado';
+      },
+      () => {
+        this.gpsStatus = 'error';
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
   }
 
   onFotoCapturada(event: Event): void {
@@ -120,6 +148,45 @@ export class TareaTrabajador implements OnInit {
       return;
     }
 
+    if (!this.gpsCoords) {
+      this.capturarUbicacion();
+      if (this.gpsStatus === 'buscando') {
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'info',
+          title: 'Obteniendo ubicación...',
+          text: 'Espera unos segundos mientras capturamos tu ubicación GPS.',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
+        setTimeout(() => {
+          if (this.gpsCoords) {
+            this.confirmarEnvio();
+          } else {
+            Swal.fire({
+              title: '¿Enviar sin ubicación?',
+              text: 'No se pudo obtener tu ubicación GPS. El reporte se enviará igual pero quedará pendiente de validación manual.',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#1f6feb',
+              cancelButtonColor: '#6c757d',
+              confirmButtonText: 'Sí, enviar igual',
+              cancelButtonText: 'Esperar'
+            }).then((r) => {
+              if (r.isConfirmed) this.procesarSubidaNube();
+            });
+          }
+        }, 3000);
+        return;
+      }
+    }
+
+    this.confirmarEnvio();
+  }
+
+  private confirmarEnvio(): void {
     Swal.fire({
       title: '¿Confirmar envío?',
       text: 'Asegúrate de que la foto sea clara. Una vez enviada, pasará a revisión gerencial.',
@@ -150,7 +217,10 @@ export class TareaTrabajador implements OnInit {
 
     this.cloudinaryService.subirImagen(this.archivoSeleccionado!).subscribe({
       next: (secureUrl) => {
-        this.tareaOperativaService.subirEvidencia(this.tareaSeleccionadaId!, secureUrl, this.inputObservaciones).subscribe({
+        this.tareaOperativaService.subirEvidencia(
+          this.tareaSeleccionadaId!, secureUrl, this.inputObservaciones,
+          this.gpsCoords?.latitud, this.gpsCoords?.longitud, this.gpsCoords?.precision
+        ).subscribe({
           next: () => {
             Swal.fire({
               icon: 'success',
@@ -165,10 +235,11 @@ export class TareaTrabajador implements OnInit {
           },
           error: (err) => {
             console.error('Error en Spring Boot:', err);
+            const msg = err.error?.mensaje || err.error || err.message || 'No se pudo guardar la tarea en la base de datos.';
             Swal.fire({
               icon: 'error',
               title: 'Error del Servidor',
-              text: 'No se pudo guardar la tarea en la base de datos.',
+              text: msg,
               confirmButtonColor: '#1f6feb'
             });
             this.isSubiendo = false;

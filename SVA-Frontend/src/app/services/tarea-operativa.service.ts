@@ -6,6 +6,9 @@ import { TareaOperativa } from '../models/tarea-operativa';
 export interface EvidenciaRequest {
   url: string;
   obs: string;
+  latitud?: number;
+  longitud?: number;
+  precision?: number;
 }
 
 @Injectable({
@@ -48,8 +51,8 @@ export class TareaOperativaService {
     return this.http.put(`${this.apiUrl}/${id}/resolver`, {}, { headers: this.getAuthHeaders(), params });
   }
 
-  subirEvidencia(id: number, url: string, obs: string): Observable<any> {
-    const body: EvidenciaRequest = { url, obs };
+  subirEvidencia(id: number, url: string, obs: string, latitud?: number, longitud?: number, precision?: number): Observable<any> {
+    const body: EvidenciaRequest = { url, obs, latitud, longitud, precision };
     return this.http.put(`${this.apiUrl}/${id}/subir-evidencia`, body, { headers: this.getAuthHeaders() });
   }
 }

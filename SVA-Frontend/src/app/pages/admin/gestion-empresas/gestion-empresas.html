@@ -104,17 +104,35 @@
             <i class="bi bi-geo-alt"></i> Vincular Sucursales (Ingresa las sedes que atiende)
           </h6>
           <div class="row g-3 align-items-end">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-3">
               <label class="form-label text-muted small fw-medium">Nombre de Sede</label>
               <input type="text" class="form-control bg-white py-2"
                 [(ngModel)]="nuevaSucursalTemporal.nombreSucursal"
                 name="tempNombre" placeholder="Ej. Santa Anita">
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
               <label class="form-label text-muted small fw-medium">Dirección de Local</label>
               <input type="text" class="form-control bg-white py-2"
                 [(ngModel)]="nuevaSucursalTemporal.direccion"
                 name="tempDireccion" placeholder="Ej. Av. Metropolitana 456">
+            </div>
+            <div class="col-6 col-md-1">
+              <label class="form-label text-muted small fw-medium">Lat.</label>
+              <input type="number" step="any" class="form-control bg-white py-2"
+                [(ngModel)]="nuevaSucursalTemporal.latitud"
+                name="tempLat" placeholder="-12.0463">
+            </div>
+            <div class="col-6 col-md-1">
+              <label class="form-label text-muted small fw-medium">Lng.</label>
+              <input type="number" step="any" class="form-control bg-white py-2"
+                [(ngModel)]="nuevaSucursalTemporal.longitud"
+                name="tempLng" placeholder="-77.0427">
+            </div>
+            <div class="col-6 col-md-1">
+              <label class="form-label text-muted small fw-medium">Radio (m)</label>
+              <input type="number" class="form-control bg-white py-2"
+                [(ngModel)]="nuevaSucursalTemporal.radioPermitido"
+                name="tempRadio" placeholder="200" min="1">
             </div>
             <div class="col-12 col-md-2">
               <button type="button" class="btn btn-dark w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-1"
@@ -135,6 +153,9 @@
                 <i class="bi bi-building"></i> 
                 <span>
                   <strong>{{ s.nombreSucursal }}</strong> - <span class="text-dark fw-light">{{ s.direccion }}</span>
+                  @if (s.latitud && s.longitud) {
+                    <span class="text-muted fw-light ms-2">({{ s.latitud }}, {{ s.longitud }})</span>
+                  }
                 </span>
               </span>
               }
@@ -186,15 +207,27 @@
           <span class="p-1 bg-white text-primary border rounded-3 shadow-sm fs-6 d-flex"><i class="bi bi-plus"></i></span> Agregar Nueva Sucursal
         </h6>
         <div class="row g-3 align-items-end">
-          <div class="col-12 col-md-5">
+          <div class="col-12 col-md-3">
             <label class="form-label text-secondary small fw-semibold">Nombre de Sede</label>
             <input type="text" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="nuevaSedeIndividual.nombreSucursal" placeholder="Ej. San Miguel">
           </div>
-          <div class="col-12 col-md-5">
+          <div class="col-12 col-md-3">
             <label class="form-label text-secondary small fw-semibold">Dirección Operativa</label>
             <input type="text" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="nuevaSedeIndividual.direccion" placeholder="Ej. Av. Universitaria 1234">
           </div>
-          <div class="col-12 col-md-2">
+          <div class="col-6 col-md-1">
+            <label class="form-label text-secondary small fw-semibold">Lat.</label>
+            <input type="number" step="any" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="nuevaSedeIndividual.latitud" placeholder="-12.0463">
+          </div>
+          <div class="col-6 col-md-1">
+            <label class="form-label text-secondary small fw-semibold">Lng.</label>
+            <input type="number" step="any" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="nuevaSedeIndividual.longitud" placeholder="-77.0427">
+          </div>
+          <div class="col-6 col-md-1">
+            <label class="form-label text-secondary small fw-semibold">Radio (m)</label>
+            <input type="number" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="nuevaSedeIndividual.radioPermitido" placeholder="200" min="1">
+          </div>
+          <div class="col-12 col-md-3">
             <button type="button" class="btn btn-primary w-100 py-2 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-1" style="background-color: #153b5c; border: none;" (click)="onAgregarSedeSuela()">
               <i class="bi bi-save"></i> <span class="d-md-none d-lg-inline">Guardar</span>
             </button>
@@ -213,6 +246,7 @@
             <tr>
               <th class="ps-4 py-2.5">Nombre Sucursal</th>
               <th class="py-2.5">Dirección</th>
+              <th class="py-2.5 text-center">GPS</th>
               <th class="text-center py-2.5" style="width: 100px;">Acción</th>
             </tr>
           </thead>
@@ -222,6 +256,13 @@
               <td class="ps-4 fw-bold text-dark">{{ s.nombreSucursal }}</td>
               <td class="text-secondary fs-6 fw-light">{{ s.direccion }}</td>
               <td class="text-center">
+                @if (s.latitud && s.longitud) {
+                  <span class="text-muted small">{{ s.latitud }}, {{ s.longitud }}</span>
+                } @else {
+                  <span class="text-muted small fst-italic">—</span>
+                }
+              </td>
+              <td class="text-center">
                 <button type="button" class="btn btn-sm btn-light text-danger rounded-circle p-0 d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 32px; height: 32px; border: 1px solid #fee2e2;" (click)="onEliminarSede(s.id)" title="Eliminar Sucursal">
                   <i class="bi bi-trash-fill"></i>
                 </button>
@@ -229,7 +270,7 @@
             </tr>
             } @empty {
             <tr>
-              <td colspan="3" class="text-center py-5 text-muted fw-light">
+              <td colspan="4" class="text-center py-5 text-muted fw-light">
                 <i class="bi bi-info-circle fs-3 d-block mb-2 opacity-50"></i>
                 Esta empresa aún no cuenta con puntos operativos registrados.
               </td>
