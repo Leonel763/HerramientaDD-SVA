@@ -6,6 +6,8 @@ import { CloudinaryService } from '../../../services/cloudinary.service';
 import { TareaOperativa } from '../../../models/tarea-operativa';
 import Swal from 'sweetalert2';
 
+declare const google: any;
+
 @Component({
   selector: 'app-tarea-trabajador',
   standalone: true,
@@ -28,6 +30,14 @@ export class TareaTrabajador implements OnInit {
 
   gpsCoords: { latitud: number; longitud: number; precision: number } | null = null;
   gpsStatus: 'no_disponible' | 'buscando' | 'capturado' | 'error' = 'no_disponible';
+
+  mapAbierto: boolean = false;
+  googleMapsCargado: boolean = false;
+  googleMapsCargando: boolean = false;
+  map: any = null;
+  marker: any = null;
+  coordsMapa: { latitud: number; longitud: number } | null = null;
+  private readonly googleMapsApiKey: string = 'AIzaSyDEXQW3tiUGqvZ78FqxYG5oHPicMlfq1ek';
 
   constructor(
     private tareaOperativaService: TareaOperativaService,
@@ -97,6 +107,120 @@ export class TareaTrabajador implements OnInit {
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
+  }
+
+  private cargarGoogleMaps(): Promise<void> {
+    return new Promise((resolve) => {
+      if ((typeof google !== 'undefined' && google.maps) || !this.googleMapsApiKey) {
+        this.googleMapsCargado = typeof google !== 'undefined' && !!google.maps;
+        resolve();
+        return;
+      }
+      if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+        const check = setInterval(() => {
+          if (typeof google !== 'undefined' && google.maps) {
+            clearInterval(check);
+            this.googleMapsCargado = true;
+            resolve();
+          }
+        }, 200);
+        return;
+      }
+      this.googleMapsCargando = true;
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        this.googleMapsCargado = true;
+        this.googleMapsCargando = false;
+        resolve();
+      };
+      script.onerror = () => {
+        this.googleMapsCargando = false;
+        resolve();
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  async abrirMapa(): Promise<void> {
+    if (!this.googleMapsApiKey) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Google Maps no configurado',
+        text: 'Configura una clave de API de Google Maps para usar el mapa.',
+        confirmButtonColor: '#1f6feb'
+      });
+      return;
+    }
+    this.mapAbierto = true;
+    await this.cargarGoogleMaps();
+    setTimeout(() => this.inicializarMapa(), 300);
+  }
+
+  private inicializarMapa(): void {
+    const el = document.querySelector('#map-container-evidence');
+    if (!el || typeof google === 'undefined' || !google.maps) return;
+    const tarea = this.tareas.find(t => t.id === this.tareaSeleccionadaId);
+    const centroSucursal = tarea?.sucursal?.latitud && tarea?.sucursal?.longitud
+      ? { lat: tarea.sucursal.latitud, lng: tarea.sucursal.longitud }
+      : null;
+    const centroGps = this.gpsCoords
+      ? { lat: this.gpsCoords.latitud, lng: this.gpsCoords.longitud }
+      : null;
+    const centro = centroSucursal || centroGps || { lat: -12.0464, lng: -77.0428 };
+
+    this.map = new google.maps.Map(el, {
+      center: centro,
+      zoom: 16,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      styles: [
+        { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
+      ]
+    });
+
+    this.marker = new google.maps.Marker({
+      position: centro,
+      map: this.map,
+      draggable: true,
+      animation: google.maps.Animation.DROP,
+      title: 'Arrástrame para ajustar la ubicación'
+    });
+
+    this.coordsMapa = { latitud: centro.lat, longitud: centro.lng };
+
+    google.maps.event.addListener(this.marker, 'dragend', () => {
+      const pos = this.marker.getPosition();
+      this.coordsMapa = { latitud: pos.lat(), longitud: pos.lng() };
+    });
+
+    this.map.addListener('click', (e: any) => {
+      this.marker.setPosition(e.latLng);
+      this.coordsMapa = { latitud: e.latLng.lat(), longitud: e.latLng.lng() };
+    });
+  }
+
+  cerrarMapa(): void {
+    this.mapAbierto = false;
+    this.coordsMapa = null;
+    this.map = null;
+    this.marker = null;
+  }
+
+  confirmarUbicacionMapa(): void {
+    if (!this.coordsMapa) return;
+    this.gpsCoords = {
+      latitud: this.coordsMapa.latitud,
+      longitud: this.coordsMapa.longitud,
+      precision: 10
+    };
+    this.gpsStatus = 'capturado';
+    this.mapAbierto = false;
+    this.map = null;
+    this.marker = null;
   }
 
   onFotoCapturada(event: Event): void {

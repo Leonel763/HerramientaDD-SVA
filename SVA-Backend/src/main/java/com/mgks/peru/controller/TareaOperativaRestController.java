@@ -61,11 +61,4 @@ public class TareaOperativaRestController {
     public List<TareaOperativa> listarTodo() {
         return tareaOperativaService.findAll();
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(Map.of("mensaje", ex.getMessage()));
-    }
 }

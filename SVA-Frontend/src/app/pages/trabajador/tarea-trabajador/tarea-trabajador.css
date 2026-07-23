@@ -1,1 +1,12 @@
-﻿
+﻿#map-container-evidence {
+  min-height: 280px;
+  width: 100%;
+}
+
+#map-container-evidence img {
+  max-width: none;
+}
+
+.gm-style-iw {
+  font-size: 13px;
+}
