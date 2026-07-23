@@ -26,14 +26,20 @@ export class GestionEmpresas implements OnInit {
 
   nuevaSucursalTemporal: Sucursal = {
     nombreSucursal: '',
-    direccion: ''
+    direccion: '',
+    latitud: undefined,
+    longitud: undefined,
+    radioPermitido: 200
   };
 
   empresaSeleccionada: Cliente | null = null;
   
   nuevaSedeIndividual: Sucursal = {
     nombreSucursal: '',
-    direccion: ''
+    direccion: '',
+    latitud: undefined,
+    longitud: undefined,
+    radioPermitido: 200
   };
 
   isModalOpen: boolean = false;
@@ -69,6 +75,9 @@ export class GestionEmpresas implements OnInit {
     this.nuevoCliente.sucursales.push({ ...this.nuevaSucursalTemporal });
     this.nuevaSucursalTemporal.nombreSucursal = '';
     this.nuevaSucursalTemporal.direccion = '';
+    this.nuevaSucursalTemporal.latitud = undefined;
+    this.nuevaSucursalTemporal.longitud = undefined;
+    this.nuevaSucursalTemporal.radioPermitido = 200;
   }
 
   onAddCompany(): void {
@@ -143,7 +152,7 @@ export class GestionEmpresas implements OnInit {
           timer: 2500,
           timerProgressBar: true
         });
-        this.nuevaSedeIndividual = { nombreSucursal: '', direccion: '' };
+        this.nuevaSedeIndividual = { nombreSucursal: '', direccion: '', latitud: undefined, longitud: undefined, radioPermitido: 200 };
         this.actualizarDatosModalYTabla();
       },
       error: (err) => {
@@ -254,7 +263,7 @@ export class GestionEmpresas implements OnInit {
 
   resetFormularioEmpresa(): void {
     this.nuevoCliente = { ruc: '', razonSocial: '', sucursales: [] };
-    this.nuevaSucursalTemporal = { nombreSucursal: '', direccion: '' };
+    this.nuevaSucursalTemporal = { nombreSucursal: '', direccion: '', latitud: undefined, longitud: undefined, radioPermitido: 200 };
     this.cargarEmpresas();
     this.subTabEmpresa = 'lista';
   }

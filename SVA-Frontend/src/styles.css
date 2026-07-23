@@ -1,4 +1,15 @@
-﻿@import "bootstrap-icons/font/bootstrap-icons.css";
+﻿@import "tailwindcss";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+@theme {
+  --color-sva-ink: #102033;
+  --color-sva-navy: #153b5c;
+  --color-sva-blue: #1f6feb;
+  --color-sva-cyan: #0ea5a4;
+  --color-sva-gold: #f2b84b;
+  --color-sva-surface: #f5f8fb;
+  --shadow-soft: 0 12px 34px rgba(16, 32, 51, 0.10);
+}
 
 :root {
   --sva-ink: #102033;
@@ -29,40 +40,121 @@ textarea {
 }
 
 .sva-focus:focus {
-  border-color: var(--sva-blue) !important;
-  box-shadow: 0 0 0 4px rgba(31, 111, 235, 0.12) !important;
+  border-color: var(--sva-navy) !important;
+  box-shadow: inset 0 -2px 0 0 var(--sva-gold) !important;
   outline: none;
 }
 
 .sva-primary-btn {
-  background: linear-gradient(135deg, var(--sva-blue), var(--sva-cyan)) !important;
+  background: var(--sva-navy) !important;
   border: 0 !important;
   color: #fff !important;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  letter-spacing: 0.04em;
+  transition: background 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
 }
 
 .sva-primary-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 34px rgba(31, 111, 235, 0.24) !important;
+  background: var(--sva-ink) !important;
+  box-shadow: 0 10px 24px rgba(16, 32, 51, 0.28) !important;
 }
 
 .sva-primary-btn:disabled {
-  opacity: 0.7;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
+/* =========================================================
+   Tema corporativo NAVY MONOCROMO (override Bootstrap)
+   Reestiliza las páginas internas construidas con Bootstrap.
+   ========================================================= */
+
+/* Botón primario -> navy sólido */
 .btn-primary,
 .bg-primary {
-  background-color: var(--sva-blue) !important;
-  border-color: var(--sva-blue) !important;
+  background-color: var(--sva-navy) !important;
+  border-color: var(--sva-navy) !important;
+  color: #fff !important;
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--sva-ink) !important;
+  border-color: var(--sva-ink) !important;
+}
+.btn-outline-primary {
+  color: var(--sva-navy) !important;
+  border-color: var(--sva-navy) !important;
+}
+.btn-outline-primary:hover {
+  background-color: var(--sva-navy) !important;
+  border-color: var(--sva-navy) !important;
+  color: #fff !important;
 }
 
-.text-primary {
-  color: var(--sva-blue) !important;
+.text-primary { color: var(--sva-navy) !important; }
+.border-primary { border-color: var(--sva-navy) !important; }
+
+/* Neutralizar semánticos vibrantes a la escala navy/gris */
+.text-success { color: #1f6feb !important; }
+.text-danger  { color: #64748b !important; }
+.text-warning { color: #475569 !important; }
+.text-muted   { color: #94a3b8 !important; }
+
+.btn-outline-danger {
+  color: #64748b !important;
+  border-color: #cbd5e1 !important;
+}
+.btn-outline-danger:hover {
+  background-color: #475569 !important;
+  border-color: #475569 !important;
+  color: #fff !important;
 }
 
-.border-primary {
-  border-color: var(--sva-blue) !important;
+/* Badges -> tonos navy/gris planos */
+.badge.bg-primary,
+.badge.bg-success,
+.badge.bg-secondary,
+.badge.bg-warning {
+  background-color: #eef2f6 !important;
+  color: var(--sva-navy) !important;
+}
+.badge {
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+  border-radius: 0 !important;
+}
+
+/* Botón light -> superficie neutra */
+.btn-light {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: var(--sva-navy) !important;
+}
+.btn-light:hover {
+  background-color: #e2e8f0 !important;
+}
+
+/* Tarjetas y bordes más sobrios (menos redondeados) */
+.card {
+  border: 1px solid #e5e9f0 !important;
+  border-radius: 6px !important;
+}
+.rounded-4, .rounded-3 { border-radius: 6px !important; }
+
+/* Tablas corporativas */
+.table > thead {
+  color: #64748b !important;
+  border-bottom: 2px solid var(--sva-navy) !important;
+}
+.table-light, .table-light > * {
+  background-color: #f8fafc !important;
+}
+
+/* Inputs con foco navy */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--sva-navy) !important;
+  box-shadow: 0 0 0 3px rgba(21, 59, 92, 0.12) !important;
 }
 
 .animate-fade-in {

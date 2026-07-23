@@ -43,7 +43,9 @@ public class TareaOperativaRestController {
     public ResponseEntity<TareaOperativa> entregar(
             @PathVariable Long id,
             @RequestBody EvidenciaRequest request) {
-        return ResponseEntity.ok(tareaOperativaService.subirEvidencia(id, request.getUrl(), request.getObs()));
+        return ResponseEntity.ok(tareaOperativaService.subirEvidencia(
+            id, request.getUrl(), request.getObs(),
+            request.getLatitud(), request.getLongitud(), request.getPrecision()));
     }
 
     @GetMapping("/all")

@@ -74,27 +74,41 @@
 
           <div class="col-12 col-lg-7">
             <div class="row g-3 h-100 align-items-end">
-              <div class="col-12 col-sm-4">
+              <div class="col-12 col-sm-3">
                 <label class="form-label text-secondary small fw-bold d-flex align-items-center gap-1">
                   <i class="bi bi-sun"></i> Turno
                 </label>
-                <select class="form-select bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="turnoSeleccionado">
+                <select class="form-select bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="turnoSeleccionado" (change)="onTurnoChange()">
                   <option value="DIA">DÍA</option>
                   <option value="NOCHE">NOCHE</option>
                 </select>
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-6 col-sm-2">
                 <label class="form-label text-secondary small fw-bold d-flex align-items-center gap-1">
-                  <i class="bi bi-clock-history"></i> Horas Laborales
+                  <i class="bi bi-clock"></i> Inicio
                 </label>
-                <select class="form-select bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="horasAsignadas">
-                  <option value="12">12 Horas</option>
-                  <option value="24">24 Horas</option>
-                </select>
+                <input type="time" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="horaInicioSeleccionada">
               </div>
 
-              <div class="col-12 col-sm-4">
+              <div class="col-6 col-sm-2">
+                <label class="form-label text-secondary small fw-bold d-flex align-items-center gap-1">
+                  <i class="bi bi-clock"></i> Fin
+                </label>
+                <input type="time" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="horaFinSeleccionada">
+              </div>
+
+              <div class="col-6 col-sm-2">
+                <label class="form-label text-secondary small fw-bold d-flex align-items-center gap-1">
+                  <i class="bi bi-hourglass-split"></i> Tolerancia
+                </label>
+                <div class="input-group">
+                  <input type="number" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="toleranciaSeleccionada" min="0" max="120">
+                  <span class="input-group-text bg-white text-muted small">min</span>
+                </div>
+              </div>
+
+              <div class="col-12 col-sm-2">
                 <label class="form-label text-secondary small fw-bold d-flex align-items-center gap-1">
                   <i class="bi bi-briefcase"></i> Tipo de Puesto
                 </label>
@@ -106,7 +120,7 @@
               </div>
 
               <div class="col-12 mt-4">
-                <button type="button" class="btn text-white w-100 py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" style="background-color: #1f6feb;" (click)="onCrearTareaMasiva()">
+                <button type="button" class="btn text-white w-100 py-2.5 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2" style="background-color: #153b5c;" (click)="onCrearTareaMasiva()">
                   <i class="bi bi-rocket-takeoff-fill"></i> Asignar a todo el Grupo Seleccionado
                 </button>
               </div>
@@ -122,7 +136,7 @@
             <tr>
               <th class="text-start ps-4"><i class="bi bi-person-badge"></i> Operario Programado</th>
               <th><i class="bi bi-brightness-high"></i> Turno</th>
-              <th><i class="bi bi-stopwatch"></i> Horas</th>
+              <th><i class="bi bi-clock"></i> Horario</th>
               <th><i class="bi bi-tag"></i> Puesto</th>
               <th><i class="bi bi-activity"></i> Estado Actual</th>
               <th class="pe-4"><i class="bi bi-camera"></i> Evidencia</th>
@@ -138,7 +152,13 @@
                   </div>
                 </td>
                 <td><span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill fw-semibold"><i class="bi" [ngClass]="tarea.turno === 'DIA' ? 'bi-sun text-warning' : 'bi-moon-stars text-primary'"></i> {{ tarea.turno }}</span></td>
-                <td><span class="fw-bold text-secondary">{{ tarea.horasAsignadas }}h</span></td>
+                <td>
+                  @if (tarea.horaInicio && tarea.horaFin) {
+                    <span class="fw-bold text-secondary">{{ tarea.horaInicio }} - {{ tarea.horaFin }}</span>
+                  } @else {
+                    <span class="text-muted small">{{ tarea.horasAsignadas }}h</span>
+                  }
+                </td>
                 <td><small class="font-monospace fw-bold text-muted bg-light p-1 rounded border">{{ tarea.tipoPuesto }}</small></td>
                 <td>
                   <span class="badge px-3 py-1.5 rounded-pill text-uppercase"

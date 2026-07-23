@@ -106,7 +106,7 @@
 
     @if (subTab === 'agregar') {
     <form (ngSubmit)="onSubmitWorker()" autocomplete="off" class="px-2 py-1">
-      <h5 class="fw-bold mb-4 d-flex align-items-center gap-2" [style.color]="isEditing ? '#0d6efd' : '#1f6feb'">
+      <h5 class="fw-bold mb-4 d-flex align-items-center gap-2" [style.color]="isEditing ? '#153b5c' : '#153b5c'">
         <i class="bi" [ngClass]="isEditing ? 'bi-person-gear' : 'bi-person-plus'"></i>
         {{ isEditing ? 'Modificando Datos del Personal' : 'Registrar Nuevo Personal' }}
       </h5>
@@ -212,7 +212,7 @@
       <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-5 pt-3 border-top border-light">
         <button type="button" class="btn btn-light px-4 py-2.5 fw-semibold w-100 w-sm-auto" (click)="resetFormulario()">Cancelar</button>
         <button type="submit" class="btn text-white px-5 py-2.5 fw-bold shadow-sm w-100 w-sm-auto d-flex align-items-center justify-content-center gap-2" 
-          [style.background-color]="isEditing ? '#0d6efd' : '#1f6feb'">
+          [style.background-color]="isEditing ? '#153b5c' : '#153b5c'">
           <i class="bi bi-save"></i> {{ isEditing ? 'Actualizar Datos' : 'Guardar Trabajador' }}
         </button>
       </div>

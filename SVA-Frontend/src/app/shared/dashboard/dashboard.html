@@ -1,26 +1,26 @@
 ﻿<div class="min-h-screen bg-slate-100 text-slate-950">
-  <nav class="sticky top-0 z-40 border-b border-slate-200 bg-white/90 px-4 py-3 shadow-sm backdrop-blur sm:px-6">
+  <nav class="sticky top-0 z-40 border-b border-slate-200 bg-white px-4 py-3 sm:px-6">
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-sva-ink text-sm font-black text-white">SVA</div>
-        <div>
-          <p class="m-0 text-base font-black leading-none text-slate-950">SVA</p>
-          <p class="m-0 mt-1 text-xs font-semibold uppercase tracking-wider text-slate-400">Operaciones</p>
+        <div class="flex h-10 w-10 items-center justify-center bg-sva-navy text-sm font-bold text-white">SVA</div>
+        <div class="border-l border-slate-200 pl-3">
+          <p class="m-0 text-sm font-bold uppercase leading-none tracking-[0.16em] text-sva-navy">SVA Perú</p>
+          <p class="m-0 mt-1 text-[10px] uppercase tracking-[0.16em] text-slate-400">Control operativo</p>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-        <div class="hidden items-center gap-3 rounded-full border border-slate-200 bg-slate-50 py-1 pl-1 pr-4 shadow-sm sm:flex">
-          <div class="flex h-9 w-9 items-center justify-center rounded-full bg-sva-blue text-white">
-            <i class="bi" [ngClass]="(userRole === 'ADMINISTRADOR' || userRole === 'SUPERADMINISTRADOR') ? 'bi-shield-lock-fill' : 'bi-person-badge-fill'"></i>
+        <div class="hidden items-center gap-3 border border-slate-200 bg-white py-1.5 pl-2 pr-4 sm:flex">
+          <div class="flex h-9 w-9 items-center justify-center bg-sva-navy text-white">
+            <i class="bi" [ngClass]="(userRole === 'ADMINISTRADOR' || userRole === 'SUPERADMINISTRADOR') ? 'bi-shield-lock' : 'bi-person-badge'"></i>
           </div>
           <div class="text-left">
-            <p class="m-0 max-w-40 truncate text-sm font-bold leading-none text-slate-900">{{ username }}</p>
-            <p class="m-0 mt-1 text-[10px] font-black uppercase tracking-wider text-sva-blue">{{ userRole }}</p>
+            <p class="m-0 max-w-40 truncate text-sm font-semibold leading-none text-slate-900">{{ username }}</p>
+            <p class="m-0 mt-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">{{ userRole }}</p>
           </div>
         </div>
 
-        <button class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-red-500 shadow-sm transition hover:bg-red-50" (click)="onLogout()" title="Cerrar sesión">
+        <button class="flex h-10 w-10 items-center justify-center border border-slate-300 bg-white text-slate-500 transition hover:border-sva-navy hover:text-sva-navy" (click)="onLogout()" title="Cerrar sesión">
           <i class="bi bi-box-arrow-right text-lg"></i>
         </button>
       </div>
@@ -34,7 +34,7 @@
       <app-worker-dashboard></app-worker-dashboard>
     } @else {
       <div class="flex min-h-[70vh] flex-col items-center justify-center text-center">
-        <div class="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-sva-blue"></div>
+        <div class="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-sva-navy"></div>
         <p class="mt-4 text-sm font-semibold text-slate-500">Validando credenciales...</p>
       </div>
     }

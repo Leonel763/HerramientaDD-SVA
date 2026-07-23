@@ -37,7 +37,7 @@
             <th class="text-start ps-4"><i class="bi bi-person-badge"></i> Operario</th>
             <th><i class="bi bi-building"></i> Puesto Asignado</th>
             <th><i class="bi bi-clock-history"></i> Turno / Horas</th>
-            <th><i class="bi bi-activity"></i> Estado de Guardia</th>
+            <th><i class="bi bi-activity"></i> Asistencia</th>
             <th><i class="bi bi-camera"></i> Evidencia</th>
             <th class="text-end pe-4"><i class="bi bi-gear"></i> Acción</th>
           </tr>
@@ -48,7 +48,7 @@
               <td class="text-start ps-4">
                 <div class="d-flex align-items-center gap-3">
                   <div class="d-flex align-items-center justify-content-center text-white rounded-circle fw-bold shadow-sm flex-shrink-0" 
-                    style="width: 38px; height: 38px; font-size: 0.9rem; background-color: #1f6feb;">
+                    style="width: 38px; height: 38px; font-size: 0.9rem; background-color: #153b5c;">
                     {{ tarea.usuario.nombre.charAt(0) }}{{ tarea.usuario.apellidos.charAt(0) }}
                   </div>
                   <div>
@@ -67,14 +67,18 @@
                 <span class="text-muted d-block small">{{ tarea.horasAsignadas }} horas</span>
               </td>
               <td>
-                <span class="badge px-3 py-1.5 rounded-pill text-uppercase shadow-sm" [ngClass]="{
-                  'bg-warning text-dark': tarea.estado === 'PENDIENTE',
-                  'bg-info text-dark': tarea.estado === 'EN_REVISION',
-                  'bg-success text-white': tarea.estado === 'APROBADO',
-                  'bg-danger text-white': tarea.estado === 'RECHAZADO' || tarea.estado === 'FALTA'
-                }">
-                  {{ tarea.estado }}
-                </span>
+                @if (tarea.asistencia === 'A') {
+                  <span class="badge bg-success text-white px-3 py-1.5 rounded-pill shadow-sm"><i class="bi bi-check-circle"></i> Asistió</span>
+                } @else if (tarea.asistencia === 'T') {
+                  <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill shadow-sm"><i class="bi bi-exclamation-triangle"></i> Tardanza</span>
+                } @else if (tarea.estado !== 'PENDIENTE') {
+                  <span class="badge bg-info text-dark px-3 py-1.5 rounded-pill shadow-sm">{{ tarea.estado }}</span>
+                } @else {
+                  <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill shadow-sm">Pendiente</span>
+                }
+                @if (tarea.horaAsistencia) {
+                  <div class="text-muted small mt-1">{{ tarea.horaAsistencia }}</div>
+                }
               </td>
               <td>
                 @if (tarea.urlEvidencia) {
@@ -91,7 +95,7 @@
               </td>
               <td class="text-end pe-4">
                 <button class="btn btn-sm text-white px-3 shadow-sm rounded-pill d-inline-flex align-items-center gap-1 fw-semibold" 
-                  style="background-color: #1f6feb;" (click)="abrirModal(tarea)">
+                  style="background-color: #153b5c;" (click)="abrirModal(tarea)">
                   <i class="bi bi-eye"></i> Auditar
                 </button>
               </td>
@@ -131,6 +135,53 @@
     
     <div class="modal-body p-3 p-md-4 bg-light overflow-y-auto" style="flex: 1 1 auto;">
       
+      @if (tareaEnModal?.horaAsistencia || tareaEnModal?.asistencia) {
+        <div class="mb-4 p-3 bg-white rounded-3 border d-flex align-items-center gap-3 flex-wrap"
+          [ngClass]="tareaEnModal?.asistencia === 'A' ? 'border-success' : 'border-warning'">
+          @if (tareaEnModal?.asistencia === 'A') {
+            <span class="badge bg-success text-white px-3 py-2 rounded-pill fs-6"><i class="bi bi-check-circle"></i> Asistió</span>
+          } @else if (tareaEnModal?.asistencia === 'T') {
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6"><i class="bi bi-exclamation-triangle"></i> Tardanza</span>
+          }
+          <div class="text-muted small">
+            <i class="bi bi-clock"></i> Marcó a las <strong>{{ tareaEnModal?.horaAsistencia }}</strong>
+            @if (tareaEnModal?.horaInicio) {
+              <span class="ms-2">(inicio turno: {{ tareaEnModal?.horaInicio }})</span>
+            }
+          </div>
+        </div>
+      }
+
+      @if (tareaEnModal?.gpsLat || tareaEnModal?.gpsLng) {
+        <div class="mb-4 p-3 bg-white rounded-3 border border-secondary border-opacity-25 shadow-sm">
+          <label class="form-label text-secondary small fw-bold mb-2 d-flex align-items-center gap-1">
+            <i class="bi bi-geo-alt-fill"></i> Ubicación GPS
+          </label>
+          <div class="d-flex flex-wrap gap-3">
+            <div>
+              <span class="text-muted small d-block">Coordenadas del agente</span>
+              <strong class="text-dark small">{{ tareaEnModal?.gpsLat?.toFixed(6) }}, {{ tareaEnModal?.gpsLng?.toFixed(6) }}</strong>
+              @if (tareaEnModal?.gpsAccuracy) {
+                <span class="text-muted small d-block">Precisión: ±{{ tareaEnModal?.gpsAccuracy }}m</span>
+              }
+            </div>
+            @if (tareaEnModal?.sucursal?.latitud && tareaEnModal?.sucursal?.longitud) {
+              <div class="border-start ps-3">
+                <span class="text-muted small d-block">Sucursal ({{ tareaEnModal?.sucursal?.nombreSucursal }})</span>
+                <strong class="text-dark small">{{ tareaEnModal?.sucursal?.latitud }}, {{ tareaEnModal?.sucursal?.longitud }}</strong>
+              </div>
+              <div class="border-start ps-3">
+                <span class="text-muted small d-block">Distancia</span>
+                <strong class="text-dark small"
+                  [ngClass]="calcularDistanciaGPS(tareaEnModal?.gpsLat, tareaEnModal?.gpsLng, tareaEnModal?.sucursal?.latitud, tareaEnModal?.sucursal?.longitud)! > (tareaEnModal?.sucursal?.radioPermitido || 200) ? 'text-danger' : 'text-success'">
+                  {{ calcularDistanciaGPS(tareaEnModal?.gpsLat, tareaEnModal?.gpsLng, tareaEnModal?.sucursal?.latitud, tareaEnModal?.sucursal?.longitud) | number:'1.0-0' }} m
+                </strong>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
       @if (tareaEnModal?.urlEvidencia) {
         <div class="mb-4 text-center">
           <label class="form-label text-secondary small fw-bold mb-2 d-block text-start">Fotografía Capturada</label>

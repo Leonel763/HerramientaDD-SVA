@@ -25,6 +25,9 @@ export class TareaOperativa implements OnInit {
 
   turnoSeleccionado: string = 'DIA';
   horasAsignadas: string = '12';
+  horaInicioSeleccionada: string = '06:00';
+  horaFinSeleccionada: string = '18:00';
+  toleranciaSeleccionada: number = 15;
   tipoPuestoSeleccionado: string = 'SALA';
 
   listaUsuarios: (Usuario & { seleccionado?: boolean })[] = [];
@@ -63,6 +66,18 @@ export class TareaOperativa implements OnInit {
       next: (data: Cliente[]) => this.listaEmpresas = data,
       error: (err) => console.error('Error al cargar empresas:', err)
     });
+  }
+
+  onTurnoChange(): void {
+    if (this.turnoSeleccionado === 'DIA') {
+      this.horaInicioSeleccionada = '06:00';
+      this.horaFinSeleccionada = '18:00';
+      this.horasAsignadas = '12';
+    } else {
+      this.horaInicioSeleccionada = '18:00';
+      this.horaFinSeleccionada = '06:00';
+      this.horasAsignadas = '12';
+    }
   }
 
   onEmpresaChange(): void {
@@ -131,6 +146,9 @@ export class TareaOperativa implements OnInit {
         fecha: this.fechaSeleccionada,
         turno: this.turnoSeleccionado,
         horasAsignadas: this.horasAsignadas,
+        horaInicio: this.horaInicioSeleccionada,
+        horaFin: this.horaFinSeleccionada,
+        toleranciaMinutos: this.toleranciaSeleccionada,
         tipoPuesto: this.tipoPuestoSeleccionado,
         estado: 'PENDIENTE',
         usuario: { dni: trabajador.dni } as Usuario,

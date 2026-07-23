@@ -12,12 +12,12 @@
   }
 
   <section class="min-w-0 flex-1">
-    <div class="sticky top-[65px] z-30 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
+    <div class="sticky top-[65px] z-30 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 lg:hidden">
       <div class="flex items-center gap-3">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-sva-ink text-sm font-black text-white">SVA</div>
-        <span class="text-lg font-black text-slate-950">Panel</span>
+        <div class="flex h-10 w-10 items-center justify-center bg-sva-navy text-sm font-bold text-white">SVA</div>
+        <span class="text-base font-bold uppercase tracking-[0.14em] text-sva-navy">Panel</span>
       </div>
-      <button class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700" (click)="toggleMobileMenu()">
+      <button class="flex h-10 w-10 items-center justify-center border border-slate-300 bg-white text-slate-700" (click)="toggleMobileMenu()">
         <i class="bi bi-list text-2xl"></i>
       </button>
     </div>
@@ -25,48 +25,51 @@
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <header class="mb-6 flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p class="mb-2 text-xs font-black uppercase tracking-[0.22em] text-sva-cyan">SVA Control</p>
-          <h2 class="m-0 text-2xl font-black tracking-normal text-slate-950 sm:text-3xl">{{ getTituloActual() }}</h2>
-          <p class="m-0 mt-2 text-sm font-medium text-slate-500">Gestión operativa y control de asistencias</p>
+          <div class="mb-3 flex items-center gap-2">
+            <span class="h-4 w-1 bg-sva-navy"></span>
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">SVA Control</p>
+          </div>
+          <h2 class="m-0 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">{{ getTituloActual() }}</h2>
+          <p class="m-0 mt-2 text-sm text-slate-500">Gestión operativa y control de asistencias</p>
         </div>
-        <span class="inline-flex w-fit items-center gap-2 rounded-full bg-sva-ink px-4 py-2 text-xs font-black uppercase tracking-wider text-white shadow-sm">
-          <i class="bi bi-geo-alt-fill text-sva-gold"></i> Sede Central
+        <span class="inline-flex w-fit items-center gap-2 border border-slate-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-sva-navy">
+          <i class="bi bi-geo-alt"></i> Sede Central
         </span>
       </header>
 
       <div class="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <button type="button" class="group rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft" (click)="selectTab('trabajadores')">
+        <button type="button" class="group border border-slate-200 border-l-2 border-l-sva-navy bg-white p-5 text-left transition hover:bg-slate-50" (click)="selectTab('trabajadores')">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-black uppercase tracking-wider text-slate-400">Trabajadores activos</span>
-              <h2 class="m-0 mt-2 text-4xl font-black text-slate-950">{{ listaTrabajadores.length }}</h2>
+              <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Trabajadores activos</span>
+              <h2 class="m-0 mt-2 text-4xl font-bold text-slate-900">{{ listaTrabajadores.length }}</h2>
             </div>
-            <div class="flex h-13 w-13 items-center justify-center rounded-2xl bg-blue-50 p-4 text-sva-blue">
-              <i class="bi bi-person-vcard-fill text-2xl"></i>
+            <div class="flex h-12 w-12 items-center justify-center bg-slate-100 text-sva-navy">
+              <i class="bi bi-person-vcard text-2xl"></i>
             </div>
           </div>
         </button>
 
-        <button type="button" class="group rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft" (click)="selectTab('tareaje')">
+        <button type="button" class="group border border-slate-200 border-l-2 border-l-sva-navy bg-white p-5 text-left transition hover:bg-slate-50" (click)="selectTab('tareaje')">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-black uppercase tracking-wider text-slate-400">Asignaciones pendientes</span>
-              <h2 class="m-0 mt-2 text-4xl font-black text-emerald-600">{{ tareasPendientes || 0 }}</h2>
+              <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Asignaciones pendientes</span>
+              <h2 class="m-0 mt-2 text-4xl font-bold text-slate-900">{{ tareasPendientes || 0 }}</h2>
             </div>
-            <div class="flex h-13 w-13 items-center justify-center rounded-2xl bg-emerald-50 p-4 text-emerald-600">
-              <i class="bi bi-clipboard-check-fill text-2xl"></i>
+            <div class="flex h-12 w-12 items-center justify-center bg-slate-100 text-sva-navy">
+              <i class="bi bi-clipboard-check text-2xl"></i>
             </div>
           </div>
         </button>
 
-        <button type="button" class="group rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-soft sm:col-span-2 xl:col-span-1" (click)="selectTab('revision')">
+        <button type="button" class="group border border-slate-200 border-l-2 border-l-sva-navy bg-white p-5 text-left transition hover:bg-slate-50 sm:col-span-2 xl:col-span-1" (click)="selectTab('revision')">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-black uppercase tracking-wider text-slate-400">Auditorías e incidencias</span>
-              <h2 class="m-0 mt-2 text-4xl font-black text-rose-600">{{ incidencias || 0 }}</h2>
+              <span class="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400">Auditorías e incidencias</span>
+              <h2 class="m-0 mt-2 text-4xl font-bold text-slate-900">{{ incidencias || 0 }}</h2>
             </div>
-            <div class="flex h-13 w-13 items-center justify-center rounded-2xl bg-rose-50 p-4 text-rose-600">
-              <i class="bi bi-shield-fill-exclamation text-2xl"></i>
+            <div class="flex h-12 w-12 items-center justify-center bg-slate-100 text-sva-navy">
+              <i class="bi bi-shield-exclamation text-2xl"></i>
             </div>
           </div>
         </button>
@@ -86,8 +89,8 @@
           <app-tarea-revision></app-tarea-revision>
         }
         @case ('resumen') {
-          <section class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-            <h5 class="m-0 text-lg font-black text-slate-950">Actividad reciente</h5>
+          <section class="border border-slate-200 bg-white p-8 text-center">
+            <h5 class="m-0 text-base font-bold uppercase tracking-[0.1em] text-slate-900">Actividad reciente</h5>
             <p class="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500">Selecciona un módulo de asignación, auditoría, trabajadores o clientes para empezar a operar el sistema SVA.</p>
           </section>
         }
