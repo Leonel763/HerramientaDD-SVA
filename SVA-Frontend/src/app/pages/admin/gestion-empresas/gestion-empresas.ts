@@ -4,7 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { EmpresaService } from '../../../services/empresa.service';
 import { Cliente } from '../../../models/cliente';
 import { Sucursal } from '../../../models/sucursal';
+import { environment } from '../../../environments/environment';
 import Swal from 'sweetalert2';
+
+declare const google: any;
 
 @Component({
   selector: 'app-gestion-empresas',
@@ -43,6 +46,14 @@ export class GestionEmpresas implements OnInit {
   };
 
   isModalOpen: boolean = false;
+
+  mapAbierto: boolean = false;
+  mapCargado: boolean = false;
+  mapCargando: boolean = false;
+  map: any = null;
+  marker: any = null;
+  mapTargetKey: string = '';
+  private readonly googleMapsApiKey: string = environment.googleMapsApiKey;
 
   constructor(private empresaService: EmpresaService) { }
 
@@ -125,6 +136,7 @@ export class GestionEmpresas implements OnInit {
 
   cerrarModal(): void {
     this.isModalOpen = false;
+    this.cerrarMapa();
     if (typeof window !== 'undefined') {
       document.body.classList.remove('modal-open');
     }
@@ -266,5 +278,115 @@ export class GestionEmpresas implements OnInit {
     this.nuevaSucursalTemporal = { nombreSucursal: '', direccion: '', latitud: undefined, longitud: undefined, radioPermitido: 200 };
     this.cargarEmpresas();
     this.subTabEmpresa = 'lista';
+  }
+
+  private obtenerObjetivoMapa(): Sucursal | null {
+    if (this.mapTargetKey === 'temporal') return this.nuevaSucursalTemporal;
+    if (this.mapTargetKey === 'individual') return this.nuevaSedeIndividual;
+    return null;
+  }
+
+  private cargarGoogleMaps(): Promise<void> {
+    return new Promise((resolve) => {
+      if ((typeof google !== 'undefined' && google.maps) || !this.googleMapsApiKey) {
+        this.mapCargado = typeof google !== 'undefined' && !!google.maps;
+        resolve();
+        return;
+      }
+      if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+        const check = setInterval(() => {
+          if (typeof google !== 'undefined' && google.maps) {
+            clearInterval(check);
+            this.mapCargado = true;
+            resolve();
+          }
+        }, 200);
+        return;
+      }
+      this.mapCargando = true;
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${this.googleMapsApiKey}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        this.mapCargado = true;
+        this.mapCargando = false;
+        resolve();
+      };
+      script.onerror = () => {
+        this.mapCargando = false;
+        resolve();
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  abrirMapaSucursal(target: string): void {
+    if (!this.googleMapsApiKey) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Google Maps no configurado',
+        text: 'Configura una clave de API de Google Maps para usar el mapa.',
+        confirmButtonColor: '#1f6feb'
+      });
+      return;
+    }
+    this.mapTargetKey = target;
+    this.mapAbierto = true;
+    this.cargarGoogleMaps().then(() => {
+      setTimeout(() => this.inicializarMapa(), 300);
+    });
+  }
+
+  private inicializarMapa(): void {
+    const target = this.obtenerObjetivoMapa();
+    const elId = this.mapTargetKey === 'temporal' ? 'map-container-temporal' : 'map-container-individual';
+    const el = document.getElementById(elId);
+    if (!el || typeof google === 'undefined' || !google.maps) return;
+
+    const lat = target?.latitud || -12.0464;
+    const lng = target?.longitud || -77.0428;
+    const centro = { lat, lng };
+
+    this.map = new google.maps.Map(el, {
+      center: centro,
+      zoom: 16,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false
+    });
+
+    this.marker = new google.maps.Marker({
+      position: centro,
+      map: this.map,
+      draggable: true,
+      animation: google.maps.Animation.DROP,
+      title: 'Arrástrame para ajustar la ubicación'
+    });
+
+    google.maps.event.addListener(this.marker, 'dragend', () => {
+      const pos = this.marker.getPosition();
+      this.actualizarCoordenadas(pos.lat(), pos.lng());
+    });
+
+    this.map.addListener('click', (e: any) => {
+      this.marker.setPosition(e.latLng);
+      this.actualizarCoordenadas(e.latLng.lat(), e.latLng.lng());
+    });
+  }
+
+  private actualizarCoordenadas(lat: number, lng: number): void {
+    const target = this.obtenerObjetivoMapa();
+    if (target) {
+      target.latitud = parseFloat(lat.toFixed(6));
+      target.longitud = parseFloat(lng.toFixed(6));
+    }
+  }
+
+  cerrarMapa(): void {
+    this.mapAbierto = false;
+    this.mapTargetKey = '';
+    this.map = null;
+    this.marker = null;
   }
 }

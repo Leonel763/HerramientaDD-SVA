@@ -134,13 +134,34 @@
                 [(ngModel)]="nuevaSucursalTemporal.radioPermitido"
                 name="tempRadio" placeholder="200" min="1">
             </div>
-            <div class="col-12 col-md-2">
+            <div class="col-6 col-md-1">
+              <label class="form-label text-muted small fw-medium opacity-0 d-none d-md-block">Mapa</label>
+              <button type="button" class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center"
+                (click)="abrirMapaSucursal('temporal')" title="Seleccionar en mapa">
+                <i class="bi bi-map"></i>
+              </button>
+            </div>
+            <div class="col-12 col-md-1">
               <button type="button" class="btn btn-dark w-100 py-2 fw-semibold d-flex align-items-center justify-content-center gap-1"
                 (click)="agregarSucursalALaCola()">
-                <i class="bi bi-plus-lg"></i> Añadir
+                <i class="bi bi-plus-lg"></i>
               </button>
             </div>
           </div>
+          @if (mapAbierto && mapTargetKey === 'temporal') {
+            <div class="mt-3 border rounded-3 overflow-hidden bg-white">
+              <div id="map-container-temporal" class="w-100" style="height: 280px;"></div>
+              <div class="bg-light px-3 py-2 border-top d-flex justify-content-between align-items-center">
+                <small class="text-muted fw-semibold">
+                  <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                  {{ nuevaSucursalTemporal.latitud ?? '—' }}, {{ nuevaSucursalTemporal.longitud ?? '—' }}
+                </small>
+                <button type="button" class="btn btn-sm btn-success d-flex align-items-center gap-1 fw-semibold" (click)="cerrarMapa()">
+                  <i class="bi bi-check-lg"></i> Listo
+                </button>
+              </div>
+            </div>
+          }
 
           @if (nuevoCliente.sucursales && nuevoCliente.sucursales.length > 0) {
           <div class="mt-4 border-top pt-3">
@@ -227,12 +248,32 @@
             <label class="form-label text-secondary small fw-semibold">Radio (m)</label>
             <input type="number" class="form-control bg-white py-2 shadow-none border-secondary border-opacity-25" [(ngModel)]="nuevaSedeIndividual.radioPermitido" placeholder="200" min="1">
           </div>
-          <div class="col-12 col-md-3">
+          <div class="col-6 col-md-1">
+            <label class="form-label text-secondary small fw-semibold opacity-0 d-none d-md-block">Mapa</label>
+            <button type="button" class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center" (click)="abrirMapaSucursal('individual')" title="Seleccionar en mapa">
+              <i class="bi bi-map"></i>
+            </button>
+          </div>
+          <div class="col-12 col-md-2">
             <button type="button" class="btn btn-primary w-100 py-2 fw-bold shadow-sm d-flex align-items-center justify-content-center gap-1" style="background-color: #153b5c; border: none;" (click)="onAgregarSedeSuela()">
               <i class="bi bi-save"></i> <span class="d-md-none d-lg-inline">Guardar</span>
             </button>
           </div>
         </div>
+        @if (mapAbierto && mapTargetKey === 'individual') {
+          <div class="mt-3 border rounded-3 overflow-hidden bg-white">
+            <div id="map-container-individual" class="w-100" style="height: 280px;"></div>
+            <div class="bg-light px-3 py-2 border-top d-flex justify-content-between align-items-center">
+              <small class="text-muted fw-semibold">
+                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                {{ nuevaSedeIndividual.latitud ?? '—' }}, {{ nuevaSedeIndividual.longitud ?? '—' }}
+              </small>
+              <button type="button" class="btn btn-sm btn-success d-flex align-items-center gap-1 fw-semibold" (click)="cerrarMapa()">
+                <i class="bi bi-check-lg"></i> Listo
+              </button>
+            </div>
+          </div>
+        }
       </div>
 
       <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
