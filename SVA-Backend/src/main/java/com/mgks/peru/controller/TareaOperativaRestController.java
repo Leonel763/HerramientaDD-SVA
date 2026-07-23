@@ -4,11 +4,13 @@ import com.mgks.peru.dto.EvidenciaRequest;
 import com.mgks.peru.model.TareaOperativa;
 import com.mgks.peru.service.TareaOperativaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tareas-operativas")
@@ -40,16 +42,30 @@ public class TareaOperativaRestController {
     }
 
     @PutMapping("/{id}/subir-evidencia")
-    public ResponseEntity<TareaOperativa> entregar(
+    public ResponseEntity<?> entregar(
             @PathVariable Long id,
             @RequestBody EvidenciaRequest request) {
-        return ResponseEntity.ok(tareaOperativaService.subirEvidencia(
-            id, request.getUrl(), request.getObs(),
-            request.getLatitud(), request.getLongitud(), request.getPrecision()));
+        try {
+            TareaOperativa result = tareaOperativaService.subirEvidencia(
+                id, request.getUrl(), request.getObs(),
+                request.getLatitud(), request.getLongitud(), request.getPrecision());
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("mensaje", e.getMessage()));
+        }
     }
 
     @GetMapping("/all")
     public List<TareaOperativa> listarTodo() {
         return tareaOperativaService.findAll();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(Map.of("mensaje", ex.getMessage()));
     }
 }
